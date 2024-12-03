@@ -146,7 +146,7 @@ Total Amount: Rs 204,262`;
 
   return (
     <div className="app-container">
-      <h1>Barcode Estimation & Verification Consulting Services</h1>
+      <h1>Barcode Estimation, Verification & Consulting</h1>
       <h2>Any individual, firm, or company applying for GTIN/GLN-13, or GTIN-8 barcode numbers will be required to pay following Entrance and Annual Fees along with the GS1 Pakistan Standard Application Form duly completed.</h2>
      
         
