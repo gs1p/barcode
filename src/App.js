@@ -168,6 +168,8 @@ Please Indicate Below the Number of Global Trade Item Numbers (GTIN's) You Requi
             <option value="textile">Textile</option>
             <option value="health care">Health Care</option>
             <option value="UDI">UDI</option>
+            <option value="UDI">Consultancy </option>
+            <option value="UDI">Verification </option>
           </select>
         </label>
       </div>
@@ -183,11 +185,12 @@ Please Indicate Below the Number of Global Trade Item Numbers (GTIN's) You Requi
       <div id="terms-details" class="terms-details">
   <h3>Terms and Conditions</h3>
   <p>
-     Annual fees are due one calendar year from the allocation date.<br />
-     From the second year onward, companies are required to pay the annual renewal fee.<br />
+     1. Annual fees are due one calendar year from the allocation date.<br />
+     2. From the second year onward, companies are required to pay the annual renewal fee.<br />
+     3. A late fee charge of <strong>5%</strong> will be applied to the total invoice amount after the due date.
   </p>
   <p>
-    A late fee charge of <strong>5%</strong> will be applied to the total invoice amount after the due date.
+   
   </p>
 </div>
 
