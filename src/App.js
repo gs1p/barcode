@@ -18,7 +18,6 @@ function App() {
     setNumbers({ num1: "", num2: "", num3: "", num4: "" });
     setMultiplicationResult(null);
   };
-
   const handleClosePopup = () => {
     setShowPopup(false);
   };
@@ -47,7 +46,7 @@ Recommendation: License 1 GLN
 Entrance Fee: Rs 22,695 (incl. Govt. Taxes)
 Annual Fee: Rs 7,566 (incl. Govt. Taxes)
 Total Amount: Rs 30,261`;
-      } else if (productNumber <= 100) {
+      }  else if (productNumber <= 100) {
         recommendation = `General Category
 
 Recommendation: License 100 GTIN-13s
@@ -69,8 +68,91 @@ Entrance Fee: Rs 45,392 (incl. Govt. Taxes)
 Annual Fee: Rs 180,959 (incl. Govt. Taxes)
 Total Amount: Rs 226,351`;
       }
+    } else if (category === "textile") {
+      if (productNumber <= 100) {
+        recommendation = `Textile Category
+
+Recommendation: License 100 GTIN-13s
+Entrance Fee: Rs 45,392 (incl. Govt. Taxes)
+Annual Fee: Rs 12,105 (incl. Govt. Taxes)
+Total Amount: Rs 57,497`;
+      } else if (productNumber <= 1000) {
+        recommendation = `Textile Category
+
+Recommendation: License 1,000 GTIN-13s
+Entrance Fee: Rs 45,392 (incl. Govt. Taxes)
+Annual Fee: Rs 30,261 (incl. Govt. Taxes)
+Total Amount: Rs 75,653`;
+      } else if (productNumber <= 10000) {
+        recommendation = `Textile Category
+
+Recommendation: License 10,000 GTIN-13s
+Entrance Fee: Rs 45,392 (incl. Govt. Taxes)
+Annual Fee: Rs 180,959 (incl. Govt. Taxes)
+Total Amount: Rs 226,351`;
+      }
+    } else if (category === "health care") {
+      if (productNumber <= 100) {
+        recommendation = `Healthcare Category
+
+Recommendation: License 100 GTIN-13s
+Entrance Fee: Rs 68,087 (incl. Govt. Taxes)
+Annual Fee: Rs 18,156 (incl. Govt. Taxes)
+Total Amount: Rs 86,243`;
+      } else if (productNumber <= 1000) {
+        recommendation = `Healthcare Category
+
+Recommendation: License 1,000 GTIN-13s
+Entrance Fee: Rs 68,087 (incl. Govt. Taxes)
+Annual Fee: Rs 45,392 (incl. Govt. Taxes)
+Total Amount: Rs 113,479`;
+      }
+    } else if (category === "UDI") {
+      if (productNumber <= 100) {
+        recommendation = `UDI Category
+
+Recommendation: License 100 GTIN-13s
+Entrance Fee: Rs 68,087 (incl. Govt. Taxes)
+Annual Fee: Rs 54,468 (incl. Govt. Taxes)
+Total Amount: Rs 122,555`;
+      } else if (productNumber <= 1000) {
+        recommendation = `UDI Category
+
+Recommendation: License 1,000 GTIN-13s
+Entrance Fee: Rs 68,087 (incl. Govt. Taxes)
+Annual Fee: Rs 136,175 (incl. Govt. Taxes)
+Total Amount: Rs 204,262`;
+      }
+    } else if (category === "Verification 1D") {
+      if (productNumber <= 10) {
+        recommendation = `Verification 1D
+
+Barcode Verification Fees of 1D
+EAN - 13's Verification Fees: License 1 - 10 GTIN
+Total Fee: Rs 907`;
+      } else if (productNumber > 10) {
+        recommendation = `Verification 1D
+
+Barcode Verification Fees of 1D
+EAN - 13's Verification Fees: License Above 10 GTIN
+Total Fee: Rs 756`;
+      }
+    } else if (category === "Verification 2D (Data Matrix)") {
+      if (productNumber <= 10) {
+        recommendation = `Verification 2D (Data Matrix)
+
+Barcode Verification Fees of 2D (Data Matrix)
+2D Data Matrix - 14's Verification Fees: License 1 - 10 GTIN
+Total Fee: Rs 1,665`;
+      } else if (productNumber > 10) {
+        recommendation = `Verification 2D (Data Matrix)
+
+Barcode Verification Fees of 2D (Data Matrix)
+2D Data Matrix - 14's Verification Fees: License Above 10 GTIN
+Total Fee: Rs 1,513`;
+      }
     }
-    // Other categories follow...
+
     setResult(recommendation);
   };
 
@@ -146,7 +228,11 @@ Total Amount: Rs 226,351`;
   <p>
      1. Annual fees are due one calendar year from the allocation date.<br />
      2. From the second year onward, companies are required to pay the annual renewal fee.<br />
-     3. A late fee charge of <strong>5%</strong> will be applied to the total invoice amount after the due date.
+     3. A late fee charge of <strong>5%</strong> will be applied to the total invoice amount after the due date.<br />
+     4. You must pay the Membership Fee to GS1 annually within<strong> 30 days </strong> of the date of GS1's invoice.<br />
+     5. GS1 may, from time to time, increase the Membership Fee.<br />
+     6. GS1 Pakistan may terminate the License immediately by giving notice if You fail to pay the Membership Fee by its due
+date.
   </p>
   <p>
    
