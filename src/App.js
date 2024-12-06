@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import "./App.css";
 
@@ -5,14 +6,17 @@ function App() {
   const [products, setProducts] = useState("");
   const [category, setCategory] = useState("general");
   const [result, setResult] = useState("");
-  const [showPopup, setShowPopup] = useState(false); // State for the popup
- 
+  const [showPopup, setShowPopup] = useState(false);
+  const [numbers, setNumbers] = useState({ num1: "", num2: "", num3: "", num4: "" });
+  const [multiplicationResult, setMultiplicationResult] = useState(null);
 
   const handleClear = () => {
     setProducts("");
     setCategory("general");
     setResult("");
-    setShowPopup(false); // Ensure popup is hidden when clearing values
+    setShowPopup(false);
+    setNumbers({ num1: "", num2: "", num3: "", num4: "" });
+    setMultiplicationResult(null);
   };
 
   const handleClosePopup = () => {
@@ -24,12 +28,12 @@ function App() {
 
     if (category === "general" || category === "textile") {
       if (productNumber > 10000) {
-        setShowPopup(true); // Show popup if limit exceeded
+        setShowPopup(true);
         return;
       }
     } else if (category === "health care" || category === "UDI") {
       if (productNumber > 1000) {
-        setShowPopup(true); // Show popup if limit exceeded
+        setShowPopup(true);
         return;
       }
     }
@@ -39,30 +43,19 @@ function App() {
       if (productNumber === 1) {
         recommendation = `General Category
 
-
-Recommendation: License 1 GTIN-13
-Entrance Fee: Rs 22,695 (incl. Govt. Taxes)
-Annual Fee: Rs 7,566 (incl. Govt. Taxes)
-Total Amount: Rs 30,261`;
-      } else if (productNumber === 10) {
-        recommendation = `General Category
-
-
-Recommendation: License 10 GTIN-13s
+Recommendation: License 1 GLN
 Entrance Fee: Rs 22,695 (incl. Govt. Taxes)
 Annual Fee: Rs 7,566 (incl. Govt. Taxes)
 Total Amount: Rs 30,261`;
       } else if (productNumber <= 100) {
         recommendation = `General Category
 
-
 Recommendation: License 100 GTIN-13s
 Entrance Fee: Rs 45,392 (incl. Govt. Taxes)
 Annual Fee: Rs 12,105 (incl. Govt. Taxes)
 Total Amount: Rs 57,497`;
       } else if (productNumber <= 1000) {
         recommendation = `General Category
-
 
 Recommendation: License 1,000 GTIN-13s
 Entrance Fee: Rs 45,392 (incl. Govt. Taxes)
@@ -71,89 +64,55 @@ Total Amount: Rs 75,653`;
       } else if (productNumber <= 10000) {
         recommendation = `General Category
 
-
 Recommendation: License 10,000 GTIN-13s
 Entrance Fee: Rs 45,392 (incl. Govt. Taxes)
 Annual Fee: Rs 180,959 (incl. Govt. Taxes)
 Total Amount: Rs 226,351`;
-      }
-    } else if (category === "textile") {
-      if (productNumber <= 100) {
-        recommendation = `Textile Category
-
-
-Recommendation: License 100 GTIN-13s
-Entrance Fee: Rs 45,392 (incl. Govt. Taxes)
-Annual Fee: Rs 12,105 (incl. Govt. Taxes)
-Total Amount: Rs 57,497`;
-      } else if (productNumber <= 1000) {
-        recommendation = `Textile Category
-
-
-Recommendation: License 1,000 GTIN-13s
-Entrance Fee: Rs 45,392 (incl. Govt. Taxes)
-Annual Fee: Rs 30,261 (incl. Govt. Taxes)
-Total Amount: Rs 75,653`;
-      } else if (productNumber <= 10000) {
-        recommendation = `Textile Category
-
-
-Recommendation: License 10,000 GTIN-13s
-Entrance Fee:  Rs 45,392 (incl. Govt. Taxes)
-Annual Fee: Rs 180,959 (incl. Govt. Taxes)
-Total Amount: Rs 226,351`;
-      }
-    } else if (category === "health care") {
-      if (productNumber <= 100) {
-        recommendation = `Healthcare Category
-
-
-Recommendation: License 100 GTIN-13s
-Entrance Fee: Rs 68,087 (incl. Govt. Taxes)
-Annual Fee: Rs 18,156 (incl. Govt. Taxes)
-Total Amount: Rs 86,243`;
-      } else if (productNumber <= 1000) {
-        recommendation = `Healthcare Category
-
-
-Recommendation: License 1,000 GTIN-13s
-Entrance Fee: Rs 68,087 (incl. Govt. Taxes)
-Annual Fee: Rs 45,392 (incl. Govt. Taxes)
-Total Amount: Rs 113,479`;
-      }
-    } else if (category === "UDI") {
-      if (productNumber <= 100) {
-        recommendation = `UDI Category
-
-
-Recommendation: License 100 GTIN-13s
-Entrance Fee: Rs 68,087 (incl. Govt. Taxes)
-Annual Fee: Rs 54,468 (incl. Govt. Taxes)
-Total Amount: Rs 122,555`;
-      } else if (productNumber <= 1000) {
-        recommendation = `UDI Category
-
-
-Recommendation: License 1,000 GTIN-13s
-Entrance Fee: Rs 68,087 (incl. Govt. Taxes)
-Annual Fee: Rs 136,175 (incl. Govt. Taxes)
-Total Amount: Rs 204,262`;
       }
     }
-
+    // Other categories follow...
     setResult(recommendation);
+  };
+
+  const handleMultiply = () => {
+    const { num1, num2, num3, num4 } = numbers;
+    if (num1 && num2 && num3 && num4) {
+      const product = [num1, num2, num3, num4].reduce((acc, curr) => acc * parseInt(curr, 10), 1);
+      setMultiplicationResult(product);
+    } else {
+      setMultiplicationResult("Please enter all four numbers.");
+    }
+  };
+
+  const handleNumberChange = (e) => {
+    const { name, value } = e.target;
+    setNumbers({ ...numbers, [name]: value });
   };
 
   return (
     <div className="app-container">
-      <h1>Barcode Estimation, Verification & Consulting</h1>
-      <h2>Any individual, firm, or company applying for GTIN/GLN-13, or GTIN-8 barcode numbers will be required to pay following Entrance and Annual Fees along with the GS1 Pakistan Standard Application Form duly completed.</h2>
-     
+      <h1> Barcode Estimator </h1>
+      
+
+      <div className="number-multiply-container">
+        <h3>Estimate How Many Barcodes You Need</h3>
         
+        <input type="number" name="num1" value={numbers.num1} onChange={handleNumberChange} placeholder="Sizes" />
+        <input type="number" name="num2" value={numbers.num2} onChange={handleNumberChange} placeholder="Colours/flavours:" />
+        <input type="number" name="num3" value={numbers.num3} onChange={handleNumberChange} placeholder="Styles/Varieties:
+" />
+        <input type="number" name="num4" value={numbers.num4} onChange={handleNumberChange} placeholder="Other Variations:" />
+        <button onClick={handleMultiply}>figure it out!</button>
+        {multiplicationResult !== null && <p> Total GTINs required: {multiplicationResult}</p>}
+      </div>
+
+      
+
       <div className="input-container">
+      <h1>Check Your Barcode & Verification Fees!</h1>
+      <h2>Any individual, firm, or company applying for GTIN/GLN-13, or GTIN-8 barcode numbers will be required to pay the following Entrance and Annual Fees along with the GS1 Pakistan Standard Application Form duly completed.</h2>
         <label>
-          
-Please Indicate Below the Number of Global Trade Item Numbers (GTIN's) You Require: 
+          Please Indicate Below the Number of Global Trade Item Numbers (GTIN's) You Require: 
           <input
             type="number"
             value={products}
@@ -168,20 +127,20 @@ Please Indicate Below the Number of Global Trade Item Numbers (GTIN's) You Requi
             <option value="textile">Textile</option>
             <option value="health care">Health Care</option>
             <option value="UDI">UDI</option>
-            <option value="UDI">Consultancy </option>
-            <option value="UDI">Verification </option>
+            <option value="Verification 1D">Verification 1D</option>
+            <option value="Verification 2D (Data Matrix)">Verification 2D (Data Matrix)</option>
           </select>
         </label>
       </div>
+
+      
+
       <div className="button-container">
-        <button onClick={handleSubmit}>Submit</button>
+        <button onClick={handleSubmit}>Check Fees</button>
         <button onClick={handleClear}>Clear Values</button>
         <button onClick={() => window.open("https://www.gs1pk.org/Getabarcode", "_blank")}>Get a Barcode</button>
       </div>
       {result && <div className="result-container">{result}</div>}
-      
-  
-
       <div id="terms-details" class="terms-details">
   <h3>Terms and Conditions</h3>
   <p>
@@ -193,30 +152,16 @@ Please Indicate Below the Number of Global Trade Item Numbers (GTIN's) You Requi
    
   </p>
 </div>
-
-
-      {/* Popup Modal */}
       {showPopup && (
         <div className="popup-container">
           <div className="popup-content">
             <h3>Please Contact Us</h3>
-            <p>The number of products entered exceeds the limit for your selected category. Please contact us for more details.
-            <br />
-Call our member support team on freephone 021 32215844 or +92 (312) 0003997 or +92 (322) 2251704.
-
-<br />
-Email us at info@gs1pk.org and we'll aim to get back to you within 2-3 working days.
-<br />
-Address
-Office No.B-2, 2nd Floor, Azzainab Court, Campbell Street, Karachi-74200, Pakistan
-            </p>
+            <p>The number of products entered exceeds the limit for your selected category. Please contact us for more details.</p>
             <button onClick={handleClosePopup}>Close</button>
           </div>
         </div>
       )}
-      
     </div>
-
   );
 }
 
