@@ -260,7 +260,7 @@ Total Fees: Rs 1,513`;
       </div>
       {result && <div className="result-container">{result}</div>}
       <div id="terms-details" class="terms-details">
-  <h3>Terms and Conditions</h3>
+  <h3>Terms and Conditions </h3>
   <p>
      1. Annual fees are due one calendar year from the allocation date.<br />
      2. From the second year onward, companies are required to pay the annual renewal fee.<br />
