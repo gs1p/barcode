@@ -45,28 +45,28 @@ function App() {
 Recommendation: License 1 GLN
 Entrance Fee: Rs 22,695 (incl. Govt. Taxes)
 Annual Fee: Rs 7,566 (incl. Govt. Taxes)
-Total Amount: Rs 30,261`;
+Total Fees: Rs 30,261`;
       }  else if (productNumber <= 100) {
         recommendation = `General Category
 
 Recommendation: License 100 GTIN-13s
 Entrance Fee: Rs 45,392 (incl. Govt. Taxes)
 Annual Fee: Rs 12,105 (incl. Govt. Taxes)
-Total Amount: Rs 57,497`;
+Total Fees: Rs 57,497`;
       } else if (productNumber <= 1000) {
         recommendation = `General Category
 
 Recommendation: License 1,000 GTIN-13s
 Entrance Fee: Rs 45,392 (incl. Govt. Taxes)
 Annual Fee: Rs 30,261 (incl. Govt. Taxes)
-Total Amount: Rs 75,653`;
+Total Fees: Rs 75,653`;
       } else if (productNumber <= 10000) {
         recommendation = `General Category
 
 Recommendation: License 10,000 GTIN-13s
 Entrance Fee: Rs 45,392 (incl. Govt. Taxes)
 Annual Fee: Rs 180,959 (incl. Govt. Taxes)
-Total Amount: Rs 226,351`;
+Total Fees: Rs 226,351`;
       }
     } else if (category === "textile") {
       if (productNumber <= 100) {
@@ -75,21 +75,21 @@ Total Amount: Rs 226,351`;
 Recommendation: License 100 GTIN-13s
 Entrance Fee: Rs 45,392 (incl. Govt. Taxes)
 Annual Fee: Rs 12,105 (incl. Govt. Taxes)
-Total Amount: Rs 57,497`;
+Total Fees: Rs 57,497`;
       } else if (productNumber <= 1000) {
         recommendation = `Textile Category
 
 Recommendation: License 1,000 GTIN-13s
 Entrance Fee: Rs 45,392 (incl. Govt. Taxes)
 Annual Fee: Rs 30,261 (incl. Govt. Taxes)
-Total Amount: Rs 75,653`;
+Total Fees: Rs 75,653`;
       } else if (productNumber <= 10000) {
         recommendation = `Textile Category
 
 Recommendation: License 10,000 GTIN-13s
 Entrance Fee: Rs 45,392 (incl. Govt. Taxes)
 Annual Fee: Rs 180,959 (incl. Govt. Taxes)
-Total Amount: Rs 226,351`;
+Total Fees: Rs 226,351`;
       }
     } else if (category === "health care") {
       if (productNumber <= 100) {
@@ -98,14 +98,14 @@ Total Amount: Rs 226,351`;
 Recommendation: License 100 GTIN-13s
 Entrance Fee: Rs 68,087 (incl. Govt. Taxes)
 Annual Fee: Rs 18,156 (incl. Govt. Taxes)
-Total Amount: Rs 86,243`;
+Total Fees: Rs 86,243`;
       } else if (productNumber <= 1000) {
         recommendation = `Healthcare Category
 
 Recommendation: License 1,000 GTIN-13s
 Entrance Fee: Rs 68,087 (incl. Govt. Taxes)
 Annual Fee: Rs 45,392 (incl. Govt. Taxes)
-Total Amount: Rs 113,479`;
+Total Fees: Rs 113,479`;
       }
     } else if (category === "UDI") {
       if (productNumber <= 100) {
@@ -114,14 +114,14 @@ Total Amount: Rs 113,479`;
 Recommendation: License 100 GTIN-13s
 Entrance Fee: Rs 68,087 (incl. Govt. Taxes)
 Annual Fee: Rs 54,468 (incl. Govt. Taxes)
-Total Amount: Rs 122,555`;
+Total Fees: Rs 122,555`;
       } else if (productNumber <= 1000) {
         recommendation = `UDI Category
 
 Recommendation: License 1,000 GTIN-13s
 Entrance Fee: Rs 68,087 (incl. Govt. Taxes)
 Annual Fee: Rs 136,175 (incl. Govt. Taxes)
-Total Amount: Rs 204,262`;
+Total Fees: Rs 204,262`;
       }
     } else if (category === "Verification 1D") {
       if (productNumber <= 10) {
@@ -129,13 +129,13 @@ Total Amount: Rs 204,262`;
 
 Barcode Verification Fees of 1D
 EAN - 13's Verification Fees: License 1 - 10 GTIN
-Total Fee: Rs 907`;
+Total Fees: Rs 907`;
       } else if (productNumber > 10) {
         recommendation = `Verification 1D
 
 Barcode Verification Fees of 1D
 EAN - 13's Verification Fees: License Above 10 GTIN
-Total Fee: Rs 756`;
+Total Fees: Rs 756`;
       }
     } else if (category === "Verification 2D (Data Matrix)") {
       if (productNumber <= 10) {
@@ -143,13 +143,13 @@ Total Fee: Rs 756`;
 
 Barcode Verification Fees of 2D (Data Matrix)
 2D Data Matrix - 14's Verification Fees: License 1 - 10 GTIN
-Total Fee: Rs 1,665`;
+Total Fees: Rs 1,665`;
       } else if (productNumber > 10) {
         recommendation = `Verification 2D (Data Matrix)
 
 Barcode Verification Fees of 2D (Data Matrix)
 2D Data Matrix - 14's Verification Fees: License Above 10 GTIN
-Total Fee: Rs 1,513`;
+Total Fees: Rs 1,513`;
       }
     }
 
@@ -158,35 +158,71 @@ Total Fee: Rs 1,513`;
 
   const handleMultiply = () => {
     const { num1, num2, num3, num4 } = numbers;
-    if (num1 && num2 && num3 && num4) {
-      const product = [num1, num2, num3, num4].reduce((acc, curr) => acc * parseInt(curr, 10), 1);
-      setMultiplicationResult(product);
-    } else {
-      setMultiplicationResult("Please enter all four numbers.");
-    }
+  
+    // Replace blank or zero values with 1
+    const parsedNumbers = {
+      num1: num1 && parseInt(num1, 10) > 0 ? parseInt(num1, 10) : 1,
+      num2: num2 && parseInt(num2, 10) > 0 ? parseInt(num2, 10) : 1,
+      num3: num3 && parseInt(num3, 10) > 0 ? parseInt(num3, 10) : 1,
+      num4: num4 && parseInt(num4, 10) > 0 ? parseInt(num4, 10) : 1,
+    };
+  
+    // Calculate the product
+    const product = Object.values(parsedNumbers).reduce((acc, curr) => acc * curr, 1);
+    setMultiplicationResult(product);
+  
+    // Update the numbers state to reflect the replaced values
+    setNumbers(parsedNumbers);
   };
-
+  
   const handleNumberChange = (e) => {
     const { name, value } = e.target;
     setNumbers({ ...numbers, [name]: value });
   };
-
+  
   return (
     <div className="app-container">
-      <h1> Barcode Estimator </h1>
-      
-
+      <h1>Barcode Estimator</h1>
+  
       <div className="number-multiply-container">
         <h3>Estimate How Many Barcodes You Need</h3>
-        
-        <input type="number" name="num1" value={numbers.num1} onChange={handleNumberChange} placeholder="Sizes" />
-        <input type="number" name="num2" value={numbers.num2} onChange={handleNumberChange} placeholder="Colours/flavours:" />
-        <input type="number" name="num3" value={numbers.num3} onChange={handleNumberChange} placeholder="Styles/Varieties:
-" />
-        <input type="number" name="num4" value={numbers.num4} onChange={handleNumberChange} placeholder="Other Variations:" />
+  
+        <input
+          type="number"
+          name="num1"
+          value={numbers.num1}
+          onChange={handleNumberChange}
+          placeholder="Sizes/Net Content:"
+        />
+        <input
+          type="number"
+          name="num2"
+          value={numbers.num2}
+          onChange={handleNumberChange}
+          placeholder="Colors/Flavors/Scents:"
+        />
+        <input
+          type="number"
+          name="num3"
+          value={numbers.num3}
+          onChange={handleNumberChange}
+          placeholder="Styles/Varieties/Models:"
+        />
+        <input
+          type="number"
+          name="num4"
+          value={numbers.num4}
+          onChange={handleNumberChange}
+          placeholder="Other Variations/Attributes:"
+        />
         <button onClick={handleMultiply}>figure it out!</button>
-        {multiplicationResult !== null && <p> Total GTINs required: {multiplicationResult}</p>}
+        {multiplicationResult !== null && (
+  <div className="result-box">Total GTINs required: {multiplicationResult}</div>
+)}
       </div>
+   
+
+  
 
       
 
@@ -234,9 +270,7 @@ Total Fee: Rs 1,513`;
      6. GS1 Pakistan may terminate the License immediately by giving notice if You fail to pay the Membership Fee by its due
 date.
   </p>
-  <p>
-   
-  </p>
+  
 </div>
       {showPopup && (
         <div className="popup-container">
