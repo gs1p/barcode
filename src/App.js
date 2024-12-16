@@ -189,7 +189,7 @@ Total Fees: Rs 136,173`;
        else if (productNumber <= 500) {
         recommendation = `UDI Category
 
-Recommendation: License 500 GTIN-14s
+Recommendation:License 500 GTIN-14s
 Entrance Fee: Rs 68,087 (incl. Govt. Taxes)
 Three-Year Fee: Rs 102,132 (incl. Govt. Taxes)
 Total Fees: Rs 170,199`;
