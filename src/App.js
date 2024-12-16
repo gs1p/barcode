@@ -44,6 +44,13 @@ Recommendation: License 1 GLN
 Entrance Fee: Rs 22,695 (incl. Govt. Taxes)
 Annual Fee: Rs 7,566 (incl. Govt. Taxes)
 Total Fees: Rs 30,261`;
+      }  else if (productNumber <= 10) {
+        recommendation = `General Category
+
+Recommendation: License 10 GTIN-13s
+Entrance Fee: Rs 22,695 (incl. Govt. Taxes)
+Annual Fee: Rs 7,566 (incl. Govt. Taxes)
+Total Fees: Rs 30,261`;
       }  else if (productNumber <= 100) {
         recommendation = `General Category
 
@@ -51,7 +58,21 @@ Recommendation: License 100 GTIN-13s
 Entrance Fee: Rs 45,392 (incl. Govt. Taxes)
 Annual Fee: Rs 12,105 (incl. Govt. Taxes)
 Total Fees: Rs 57,497`;
-      } else if (productNumber <= 1000) {
+      }  else if (productNumber <= 300) {
+        recommendation = `General Category
+
+Recommendation: License 300 GTIN-13s
+Entrance Fee: Rs 45,392 (incl. Govt. Taxes)
+Annual Fee: Rs 15,131 (incl. Govt. Taxes)
+Total Fees: Rs 60,523`;
+      } else if (productNumber <= 500) {
+        recommendation = `General Category
+
+Recommendation: License 500 GTIN-13s
+Entrance Fee: Rs 45,392 (incl. Govt. Taxes)
+Annual Fee: Rs 22,695 (incl. Govt. Taxes)
+Total Fees: Rs 68,087`;
+      }else if (productNumber <= 1000) {
         recommendation = `General Category
 
 Recommendation: License 1,000 GTIN-13s
@@ -66,7 +87,9 @@ Entrance Fee: Rs 45,392 (incl. Govt. Taxes)
 Annual Fee: Rs 180,959 (incl. Govt. Taxes)
 Total Fees: Rs 226,351`;
       }
-    } else if (category === "textile") {
+    }
+    
+    /**else if (category === "textile") {
       if (productNumber <= 100) {
         recommendation = `Textile Category
 
@@ -89,36 +112,93 @@ Entrance Fee: Rs 45,392 (incl. Govt. Taxes)
 Annual Fee: Rs 180,959 (incl. Govt. Taxes)
 Total Fees: Rs 226,351`;
       }
-    } else if (category === "health care") {
-      if (productNumber <= 100) {
+    } **/else if (category === "health care") {
+      if (productNumber === 1) {
         recommendation = `Healthcare Category
 
-Recommendation: License 100 GTIN-13s
+Recommendation: License 1 GTIN-13s/GLN
+Entrance Fee: Rs 34,044 (incl. Govt. Taxes)
+Annual Fee: Rs 11,348 (incl. Govt. Taxes)
+Total Fees: Rs 45,392`;
+      } 
+      else if (productNumber <= 10) {
+        recommendation = `Healthcare Category
+
+Recommendation: License 10 GTIN-14s
+Entrance Fee: Rs 34,044 (incl. Govt. Taxes)
+Annual Fee: Rs 11,348 (incl. Govt. Taxes)
+Total Fees: Rs 45,392`;
+      }
+      else if (productNumber <= 100) {
+        recommendation = `Healthcare Category
+
+Recommendation: License 100 GTIN-14s
 Entrance Fee: Rs 68,087 (incl. Govt. Taxes)
 Annual Fee: Rs 18,156 (incl. Govt. Taxes)
 Total Fees: Rs 86,243`;
-      } else if (productNumber <= 1000) {
+      }
+      else if (productNumber <= 300) {
         recommendation = `Healthcare Category
 
-Recommendation: License 1,000 GTIN-13s
+Recommendation: License 300 GTIN-14s
+Entrance Fee: Rs 68,087 (incl. Govt. Taxes)
+Annual Fee: Rs 22,695 (incl. Govt. Taxes)
+Total Fees: Rs 90,782`;
+      }else if (productNumber <= 500) {
+        recommendation = `Healthcare Category
+
+Recommendation: License 500 GTIN-14s
+Entrance Fee: Rs 68,087 (incl. Govt. Taxes)
+Annual Fee: Rs 34,044 (incl. Govt. Taxes)
+Total Fees: Rs 102,131`;
+      }
+      else if (productNumber <= 1000) {
+        recommendation = `Healthcare Category
+
+Recommendation: License 1,000 GTIN-14s
 Entrance Fee: Rs 68,087 (incl. Govt. Taxes)
 Annual Fee: Rs 45,392 (incl. Govt. Taxes)
 Total Fees: Rs 113,479`;
       }
     } else if (category === "UDI") {
-      if (productNumber <= 100) {
+      
+      if (productNumber === 1) {
         recommendation = `UDI Category
 
-Recommendation: License 100 GTIN-13s
+Recommendation: License 1 GLN/GTIN-13s
+Entrance Fee: Rs 34,044 (incl. Govt. Taxes)
+Three-Year Fee: Rs 34,043 (incl. Govt. Taxes)
+Total Fees: Rs 68,087`;
+      }
+      else if (productNumber <= 100) {
+        recommendation = `UDI Category
+
+Recommendation: License 100 GTIN-14s
 Entrance Fee: Rs 68,087 (incl. Govt. Taxes)
-Annual Fee: Rs 54,468 (incl. Govt. Taxes)
+Three-Year Fee: Rs 54,468 (incl. Govt. Taxes)
 Total Fees: Rs 122,555`;
-      } else if (productNumber <= 1000) {
+      } 
+      else if (productNumber <= 300) {
         recommendation = `UDI Category
 
-Recommendation: License 1,000 GTIN-13s
+Recommendation: License 300 GTIN-14s
 Entrance Fee: Rs 68,087 (incl. Govt. Taxes)
-Annual Fee: Rs 136,175 (incl. Govt. Taxes)
+Three-Year Fee: Rs 68,086 (incl. Govt. Taxes)
+Total Fees: Rs 136,173`;
+      }  
+       else if (productNumber <= 500) {
+        recommendation = `UDI Category
+
+Recommendation: License 500 GTIN-14s
+Entrance Fee: Rs 68,087 (incl. Govt. Taxes)
+Three-Year Fee: Rs 102,132 (incl. Govt. Taxes)
+Total Fees: Rs 170,199`;
+      }else if (productNumber <= 1000) {
+        recommendation = `UDI Category
+
+Recommendation: License 1,000 GTIN-13
+Entrance Fee: Rs 68,087 (incl. Govt. Taxes)
+Three-Year Fee: Rs 136,175 (incl. Govt. Taxes)
 Total Fees: Rs 204,262`;
       }
     } else if (category === "Verification 1D") {
@@ -175,7 +255,7 @@ Total Fees: Rs 1,513`;
           Product category that best identifies your business:
           <select value={category} onChange={(e) => setCategory(e.target.value)}>
             <option value="general">General</option>
-            <option value="textile">Textile</option>
+        {/* <option value="textile">Textile</option>*/}
             <option value="health care">Health Care</option>
             <option value="UDI">UDI</option>
             <option value="Verification 1D">Verification 1D</option>
