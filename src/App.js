@@ -229,6 +229,37 @@ Barcode Verification Fees of 2D (Data Matrix)
 2D Data Matrix - 14's Verification Fees: License Above 10 GTIN
 Total Fees: Rs 1,513`;
       }
+    } 
+    
+    
+    else if (category === "UDI Verification 1D") {
+      if (productNumber <= 10) {
+        recommendation = `UDI Verification 1D
+
+Barcode Verification Fees of 1D UDI -14's
+EAN - 13's Verification Fees: License 1 - 10 GTIN (Per GTIN's)
+Total Fees: Rs 870`;
+      } else if (productNumber > 10) {
+        recommendation = `UDI Verification 1D
+
+Barcode Verification Fees of 1D UDI -14's
+EAN - 13's Verification Fees: License Above 10 GTIN (Per GTIN's)
+Total Fees: Rs 812`;
+      }
+    } else if (category === "UDI Verification 2D (Data Matrix)") {
+      if (productNumber <= 10) {
+        recommendation = `UDI Verification 2D (Data Matrix)
+
+Barcode Verification Fees of 2D (Data Matrix) 
+2D Data Matrix - 14's Verification Fees: License 1 - 10 GTIN
+Total Fees: Rs 1,387`;
+      } else if (productNumber > 10) {
+        recommendation = `UDI Verification 2D (Data Matrix) -14's
+
+Barcode Verification Fees of 2D (Data Matrix)
+2D Data Matrix - 14's Verification Fees: License Above 10 GTIN
+Total Fees: Rs 1,261`;
+      }
     }
 
     setResult(recommendation);
@@ -256,10 +287,12 @@ Total Fees: Rs 1,513`;
           <select value={category} onChange={(e) => setCategory(e.target.value)}>
             <option value="general">General</option>
         {/* <option value="textile">Textile</option>*/}
-            <option value="health care">Health Care</option>
+            <option value="health care">Healthcare</option>
             <option value="UDI">UDI</option>
-            <option value="Verification 1D">Verification 1D</option>
-            <option value="Verification 2D (Data Matrix)">Verification 2D (Data Matrix)</option>
+            <option value="Verification 1D">Healthcare Verification 1D</option>
+            <option value="Verification 2D (Data Matrix)">Healthcare Verification 2D (Data Matrix)</option>
+            <option value="UDI Verification 1D">UDI Verification 1D</option>
+            <option value="UDI Verification 2D (Data Matrix)">UDI Verification 2D (Data Matrix)</option>
           </select>
         </label>
       </div>
