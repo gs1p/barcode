@@ -1,6 +1,3 @@
-import { Copy } from 'lucide-react'; // 1. Import the icon
-import './CompanyDetails.css'
-
 interface CompanyDetailsProps {
     item: any;
     formatDate: (dateString?: string) => string;
@@ -23,8 +20,6 @@ export default function CompanyDetails({ item, formatDate }: CompanyDetailsProps
         ].filter(Boolean);
         
         const addressString = addressParts.join(', ');
-        // 🚨 Note: The maps URL template in your original code seems slightly off.
-        // It looks like you intended to use a full Google Maps URL with encodeURIComponent.
         const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addressString)}`;
         window.open(mapsUrl, '_blank');
     };
@@ -43,8 +38,6 @@ export default function CompanyDetails({ item, formatDate }: CompanyDetailsProps
                             <div className="detail-value-bold">{item.gs1Licence.licenseeName}</div>
                         </div>
 
-                        {/* ... other details ... */}
-                        
                         {item.gs1Licence.address && (
                             <div className="detail-row">
                                 <span className="detail-label">Address</span>
@@ -81,16 +74,26 @@ export default function CompanyDetails({ item, formatDate }: CompanyDetailsProps
                                         className="action-button"
                                         title="Open in maps"
                                     >
-                                        {/* 2. Example: Using a MapPin icon instead of text */}
-                                        Open in Map 
+                                        Open in Map
                                     </button>
                                 </div>
                             </div>
                         )}
-                        
-                        {/* ... website ... */}
-                        
-                        {/* 🌟 THIS IS THE KEY CHANGE (License Key) 🌟 */}
+
+                        {item.gs1Licence.contactPoint && item.gs1Licence.contactPoint.length > 0 && (
+                            <div className="detail-row">
+                                <span className="detail-label">Website</span>
+                                <a
+                                    href={item.gs1Licence.contactPoint[0].website}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="detail-value-link"
+                                >
+                                    {item.gs1Licence.contactPoint[0].website}
+                                </a>
+                            </div>
+                        )}
+
                         <div className="detail-row">
                             <span className="detail-label">License Key</span>
                             <div className="detail-value-with-copy">
@@ -100,13 +103,11 @@ export default function CompanyDetails({ item, formatDate }: CompanyDetailsProps
                                     className="copy-button"
                                     title="Copy to clipboard"
                                 >
-                                    {/* 3. Replaced "Copy" text with the Lucide-React Copy icon */}
-                                    <Copy size={16} /> 
+                                    Copy
                                 </button>
                             </div>
                         </div>
 
-                        {/* 🌟 (License Type) 🌟 */}
                         <div className="detail-row">
                             <span className="detail-label">License Type</span>
                             <div className="detail-value-with-copy">
@@ -116,14 +117,33 @@ export default function CompanyDetails({ item, formatDate }: CompanyDetailsProps
                                     className="copy-button"
                                     title="Copy to clipboard"
                                 >
-                                    {/* 4. Replaced "Copy" text with the Lucide-React Copy icon */}
-                                    <Copy size={16} />
+                                    Copy
                                 </button>
                             </div>
                         </div>
-                        
-                        {/* ... GLN and Licensing MO details ... */}
 
+                        {item.gs1Licence.licenseeGLN && (
+                            <div className="detail-row">
+                                <span className="detail-label">Global Location Number (GLN)</span>
+                                <div className="detail-value-with-copy">
+                                    <span className="detail-value">{item.gs1Licence.licenseeGLN}</span>
+                                    <button 
+                                        onClick={() => handleCopyToClipboard(item.gs1Licence.licenseeGLN)}
+                                        className="copy-button"
+                                        title="Copy to clipboard"
+                                    >
+                                        Copy
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                        {item.gs1Licence.licensingMO && (
+                            <div className="detail-row">
+                                <span className="detail-label">Licensing GS1 Member Organisation</span>
+                                <span className="detail-value">{item.gs1Licence.licensingMO.moName}</span>
+                            </div>
+                        )}
                     </>
                 )}
             </div>
