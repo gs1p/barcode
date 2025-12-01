@@ -3,8 +3,47 @@ export function formatCountryCode(code: string | number): string {
   // Handle if code is not a string
   if (!code) return '';
   
-  const codeStr = String(code).toUpperCase();
+  const codeStr = String(code).trim();
   
+  // M.49 numeric codes (UN geographic regions)
+  const m49Codes: Record<string, string> = {
+    '001': 'World',
+    '002': 'Africa',
+    '003': 'North America',
+    '005': 'South America',
+    '009': 'Oceania',
+    '011': 'Western Africa',
+    '013': 'Central America',
+    '014': 'Eastern Africa',
+    '015': 'Northern Africa',
+    '017': 'Middle Africa',
+    '018': 'Southern Africa',
+    '019': 'Americas',
+    '021': 'Northern America',
+    '029': 'Caribbean',
+    '030': 'Eastern Asia',
+    '034': 'Southern Asia',
+    '035': 'South-eastern Asia',
+    '039': 'Southern Europe',
+    '053': 'Australia and New Zealand',
+    '054': 'Melanesia',
+    '057': 'Micronesia',
+    '061': 'Polynesia',
+    '142': 'Asia',
+    '143': 'Central Asia',
+    '145': 'Western Asia',
+    '150': 'Europe',
+    '151': 'Eastern Europe',
+    '154': 'Northern Europe',
+    '155': 'Western Europe',
+  };
+  
+  // Check if it's an M.49 code (numeric)
+  if (/^\d{3}$/.test(codeStr)) {
+    return m49Codes[codeStr] || `Region ${codeStr}`;
+  }
+  
+  // ISO 3166-1 alpha-2 codes
   const countryNames: Record<string, string> = {
     'US': 'United States',
     'GB': 'United Kingdom',
@@ -66,5 +105,6 @@ export function formatCountryCode(code: string | number): string {
     'PK': 'Pakistan',
   };
 
-  return countryNames[codeStr] || codeStr;
+  const upperCode = codeStr.toUpperCase();
+  return countryNames[upperCode] || upperCode;
 }
