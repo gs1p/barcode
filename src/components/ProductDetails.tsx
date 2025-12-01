@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { Copy, Check } from 'lucide-react';
 import { formatCountryCode } from '../lib/country';
 
 interface ProductDetailsProps {
@@ -15,6 +17,18 @@ const getLinkTypeLabel = (key: string) => {
 };
 
 export default function ProductDetails({ item }: ProductDetailsProps) {
+    const [copied, setCopied] = useState(false);
+
+    const handleCopy = async (text: string) => {
+        try {
+            await navigator.clipboard.writeText(text);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        } catch (err) {
+            console.error('Failed to copy:', err);
+        }
+    };
+
     return (
         <div className="company-info-section">
             <div className="product-title-section">
@@ -51,7 +65,22 @@ export default function ProductDetails({ item }: ProductDetailsProps) {
                     {item.productDescription?.[0]?.value && (
                         <div className="detail-row">
                             <span className="detail-label">Product description</span>
-                            <span className="detail-value">{item.productDescription[0].value}</span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1 }}>
+                                <span className="detail-value" style={{ flex: 1 }}>
+                                    {item.productDescription[0].value}
+                                </span>
+                                <button
+                                    onClick={() => handleCopy(item.productDescription[0].value)}
+                                    className="copy-btn"
+                                    title="Copy to clipboard"
+                                >
+                                    {copied ? (
+                                        <Check size={16} style={{ color: '#10b981' }} />
+                                    ) : (
+                                        <Copy size={16} />
+                                    )}
+                                </button>
+                            </div>
                         </div>
                     )}
 
