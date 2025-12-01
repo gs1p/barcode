@@ -22,6 +22,7 @@ export default function BarcodeScanner({
     const [torchSupported, setTorchSupported] = useState(false);
     const [zoomLevel, setZoomLevel] = useState(1);
     const [zoomSupported, setZoomSupported] = useState(false);
+    const videoTrackRef = useRef<MediaStreamTrack | null>(null);
 
     useEffect(() => {
         if (!showScanner) return;
@@ -96,11 +97,23 @@ export default function BarcodeScanner({
                     () => { }
                 );
 
-                // Check torch (flash) support
-                checkTorchSupport();
-                
-                // Check zoom support
-                checkZoomSupport();
+                // Get video track reference for torch control
+                setTimeout(async () => {
+                    try {
+                        const stream = await navigator.mediaDevices.getUserMedia({ 
+                            video: { facingMode: "environment" } 
+                        });
+                        videoTrackRef.current = stream.getVideoTracks()[0];
+                        
+                        // Check torch (flash) support
+                        checkTorchSupport();
+                        
+                        // Check zoom support
+                        checkZoomSupport();
+                    } catch (err) {
+                        console.error('Error getting video track:', err);
+                    }
+                }, 1000);
 
             } catch (err: any) {
                 console.error('Scanner error:', err);
@@ -113,6 +126,18 @@ export default function BarcodeScanner({
         return () => {
             const cleanup = async () => {
                 try {
+                    // Turn off torch before cleanup
+                    if (torchEnabled && videoTrackRef.current) {
+                        await videoTrackRef.current.applyConstraints({
+                            advanced: [{ torch: false } as any]
+                        });
+                    }
+                    
+                    if (videoTrackRef.current) {
+                        videoTrackRef.current.stop();
+                        videoTrackRef.current = null;
+                    }
+                    
                     if (html5QrCodeRef.current) {
                         const isScanning = html5QrCodeRef.current.getState() === 2;
                         if (isScanning) {
@@ -131,56 +156,56 @@ export default function BarcodeScanner({
 
     const checkTorchSupport = async () => {
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({ 
-                video: { facingMode: "environment" } 
-            });
-            const track = stream.getVideoTracks()[0];
-            const capabilities = track.getCapabilities();
+            if (!videoTrackRef.current) return;
+            
+            const capabilities = videoTrackRef.current.getCapabilities();
             
             if ('torch' in capabilities) {
                 setTorchSupported(true);
+                console.log('Torch supported!');
+            } else {
+                console.log('Torch not supported on this device');
             }
-            
-            track.stop();
         } catch (err) {
-            console.log('Torch not supported');
+            console.log('Error checking torch support:', err);
         }
     };
 
     const checkZoomSupport = async () => {
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({ 
-                video: { facingMode: "environment" } 
-            });
-            const track = stream.getVideoTracks()[0];
-            const capabilities = track.getCapabilities();
+            if (!videoTrackRef.current) return;
+            
+            const capabilities = videoTrackRef.current.getCapabilities();
             
             if ('zoom' in capabilities) {
                 setZoomSupported(true);
+                console.log('Zoom supported!');
+            } else {
+                console.log('Zoom not supported on this device');
             }
-            
-            track.stop();
         } catch (err) {
-            console.log('Zoom not supported');
+            console.log('Error checking zoom support:', err);
         }
     };
 
     const toggleTorch = async () => {
         try {
-            if (!html5QrCodeRef.current) return;
+            if (!videoTrackRef.current) {
+                console.error('No video track available');
+                return;
+            }
             
-            const stream = await navigator.mediaDevices.getUserMedia({ 
-                video: { facingMode: "environment" } 
+            const newTorchState = !torchEnabled;
+            
+            await videoTrackRef.current.applyConstraints({
+                advanced: [{ torch: newTorchState } as any]
             });
-            const track = stream.getVideoTracks()[0];
             
-            await track.applyConstraints({
-                advanced: [{ torch: !torchEnabled } as any]
-            });
-            
-            setTorchEnabled(!torchEnabled);
+            setTorchEnabled(newTorchState);
+            console.log(`Torch ${newTorchState ? 'ON' : 'OFF'}`);
         } catch (err) {
             console.error('Error toggling torch:', err);
+            onError('Unable to control flash. Please check camera permissions.');
         }
     };
 
@@ -200,14 +225,13 @@ export default function BarcodeScanner({
 
     const applyZoom = async (zoom: number) => {
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({ 
-                video: { facingMode: "environment" } 
-            });
-            const track = stream.getVideoTracks()[0];
+            if (!videoTrackRef.current) return;
             
-            await track.applyConstraints({
+            await videoTrackRef.current.applyConstraints({
                 advanced: [{ zoom } as any]
             });
+            
+            console.log(`Zoom set to ${zoom}x`);
         } catch (err) {
             console.error('Error applying zoom:', err);
         }
@@ -248,7 +272,7 @@ export default function BarcodeScanner({
                             {torchSupported && (
                                 <button 
                                     onClick={toggleTorch}
-                                    className="control-btn"
+                                    className={`control-btn ${torchEnabled ? 'torch-active' : ''}`}
                                     title={torchEnabled ? "Turn off flash" : "Turn on flash"}
                                 >
                                     {torchEnabled ? (
@@ -413,6 +437,16 @@ export default function BarcodeScanner({
                 .control-btn:disabled {
                     opacity: 0.3;
                     cursor: not-allowed;
+                }
+
+                .torch-active {
+                    background: rgba(251, 191, 36, 0.3) !important;
+                    border-color: rgba(251, 191, 36, 0.5) !important;
+                    box-shadow: 0 0 20px rgba(251, 191, 36, 0.4);
+                }
+
+                .torch-active:hover {
+                    background: rgba(251, 191, 36, 0.4) !important;
                 }
 
                 .zoom-controls {
