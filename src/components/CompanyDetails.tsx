@@ -4,6 +4,26 @@ interface CompanyDetailsProps {
 }
 
 export default function CompanyDetails({ item, formatDate }: CompanyDetailsProps) {
+    const handleCopyToClipboard = (text: string) => {
+        navigator.clipboard.writeText(text);
+    };
+
+    const openInMaps = () => {
+        if (!item.gs1Licence?.address) return;
+        
+        const addressParts = [
+            item.gs1Licence.address.streetAddress?.value,
+            item.gs1Licence.address.addressLocality?.value,
+            item.gs1Licence.address.addressRegion?.value,
+            item.gs1Licence.address.postalCode,
+            item.gs1Licence.address.countryCode
+        ].filter(Boolean);
+        
+        const addressString = addressParts.join(', ');
+        const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addressString)}`;
+        window.open(mapsUrl, '_blank');
+    };
+
     return (
         <div className="company-info-section">
             <h2 className="company-info-title">
@@ -21,32 +41,41 @@ export default function CompanyDetails({ item, formatDate }: CompanyDetailsProps
                         {item.gs1Licence.address && (
                             <div className="detail-row">
                                 <span className="detail-label">Address</span>
-                                <div className="company-address">
-                                    {item.gs1Licence.licenseeName && (
-                                        <span className="company-address-line">{item.gs1Licence.licenseeName}</span>
-                                    )}
-                                    {item.gs1Licence.address.streetAddress && (
-                                        <span className="company-address-line">
-                                            {item.gs1Licence.address.streetAddress.value}
-                                        </span>
-                                    )}
-                                    {item.gs1Licence.address.addressLocality && (
-                                        <span className="company-address-line">
-                                            {item.gs1Licence.address.addressLocality.value}
-                                            {item.gs1Licence.address.addressRegion &&
-                                                `, ${item.gs1Licence.address.addressRegion.value}`}
-                                        </span>
-                                    )}
-                                    {item.gs1Licence.address.postalCode && (
-                                        <span className="company-address-line">
-                                            {item.gs1Licence.address.postalCode}
-                                        </span>
-                                    )}
-                                    {item.gs1Licence.address.countryCode && (
-                                        <span className="company-address-line">
-                                            {item.gs1Licence.address.countryCode}
-                                        </span>
-                                    )}
+                                <div className="detail-value-with-action">
+                                    <div className="company-address">
+                                        {item.gs1Licence.licenseeName && (
+                                            <span className="company-address-line">{item.gs1Licence.licenseeName}</span>
+                                        )}
+                                        {item.gs1Licence.address.streetAddress && (
+                                            <span className="company-address-line">
+                                                {item.gs1Licence.address.streetAddress.value}
+                                            </span>
+                                        )}
+                                        {item.gs1Licence.address.addressLocality && (
+                                            <span className="company-address-line">
+                                                {item.gs1Licence.address.addressLocality.value}
+                                                {item.gs1Licence.address.addressRegion &&
+                                                    `, ${item.gs1Licence.address.addressRegion.value}`}
+                                            </span>
+                                        )}
+                                        {item.gs1Licence.address.postalCode && (
+                                            <span className="company-address-line">
+                                                {item.gs1Licence.address.postalCode}
+                                            </span>
+                                        )}
+                                        {item.gs1Licence.address.countryCode && (
+                                            <span className="company-address-line">
+                                                {item.gs1Licence.address.countryCode}
+                                            </span>
+                                        )}
+                                    </div>
+                                    <button 
+                                        onClick={openInMaps}
+                                        className="action-button"
+                                        title="Open in maps"
+                                    >
+                                        Open in Map
+                                    </button>
                                 </div>
                             </div>
                         )}
@@ -67,18 +96,45 @@ export default function CompanyDetails({ item, formatDate }: CompanyDetailsProps
 
                         <div className="detail-row">
                             <span className="detail-label">License Key</span>
-                            <span className="detail-value">{item.gs1Licence.licenceKey}</span>
+                            <div className="detail-value-with-copy">
+                                <span className="detail-value">{item.gs1Licence.licenceKey}</span>
+                                <button 
+                                    onClick={() => handleCopyToClipboard(item.gs1Licence.licenceKey)}
+                                    className="copy-button"
+                                    title="Copy to clipboard"
+                                >
+                                    Copy
+                                </button>
+                            </div>
                         </div>
 
                         <div className="detail-row">
                             <span className="detail-label">License Type</span>
-                            <span className="detail-value">{item.gs1Licence.licenceType}</span>
+                            <div className="detail-value-with-copy">
+                                <span className="detail-value">{item.gs1Licence.licenceType}</span>
+                                <button 
+                                    onClick={() => handleCopyToClipboard(item.gs1Licence.licenceType)}
+                                    className="copy-button"
+                                    title="Copy to clipboard"
+                                >
+                                    Copy
+                                </button>
+                            </div>
                         </div>
 
                         {item.gs1Licence.licenseeGLN && (
                             <div className="detail-row">
                                 <span className="detail-label">Global Location Number (GLN)</span>
-                                <span className="detail-value">{item.gs1Licence.licenseeGLN}</span>
+                                <div className="detail-value-with-copy">
+                                    <span className="detail-value">{item.gs1Licence.licenseeGLN}</span>
+                                    <button 
+                                        onClick={() => handleCopyToClipboard(item.gs1Licence.licenseeGLN)}
+                                        className="copy-button"
+                                        title="Copy to clipboard"
+                                    >
+                                        Copy
+                                    </button>
+                                </div>
                             </div>
                         )}
 
