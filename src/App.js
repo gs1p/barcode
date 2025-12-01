@@ -78,7 +78,7 @@ function App() {
           required
         />
 
-        <label htmlFor="streetAddress">Street Address</label>
+        <label htmlFor="streetAddress">Street Ad</label>
         <input
           type="text"
           name="streetAddress"
