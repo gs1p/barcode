@@ -40,18 +40,18 @@ export default function BarcodeScanner({
                 // Enhanced configuration with all features
                 const config = {
                     fps: 30, // Higher frame rate for faster scanning
-                    qrbox: { width: 300, height: 150 },
+                    qrbox: { width: 250, height: 120 }, // Smaller box for small barcodes
                     aspectRatio: 1.777778,
                     disableFlip: false,
-                    // All major barcode formats
+                    // EAN-13 and EAN-8 priority, then others
                     formatsToSupport: [
-                        0,  // QR_CODE
-                        8,  // EAN_13
-                        9,  // EAN_8
+                        8,  // EAN_13 (PRIORITY)
+                        9,  // EAN_8 (PRIORITY)
                         12, // UPC_A
                         13, // UPC_E
                         5,  // CODE_128
                         4,  // CODE_39
+                        0,  // QR_CODE
                         1,  // AZTEC
                         2,  // CODABAR
                         3,  // CODE_93
@@ -60,17 +60,23 @@ export default function BarcodeScanner({
                         10, // PDF_417
                         11  // RSS_14
                     ],
-                    // Advanced video constraints
+                    // Advanced video constraints for close-up scanning
                     videoConstraints: {
                         facingMode: "environment",
                         width: { ideal: 1920, min: 1280 }, // Full HD resolution
                         height: { ideal: 1080, min: 720 }, // 1080p preferred
-                        frameRate: { ideal: 30, min: 15 }, // Higher frame rate
+                        frameRate: { ideal: 30, min: 20 }, // Higher frame rate
                         aspectRatio: 1.777778,
                         advanced: [
                             { focusMode: "continuous" }, // Continuous autofocus
+                            { focusDistance: { ideal: 0.05, min: 0.05, max: 0.3 } }, // 5cm-30cm focus range
                             { exposureMode: "continuous" }, // Auto exposure
+                            { exposureCompensation: 0 }, // Balanced exposure
                             { whiteBalanceMode: "continuous" }, // Auto white balance
+                            { brightness: { ideal: 1.2 } }, // Slight brightness boost
+                            { contrast: { ideal: 1.3 } }, // Enhanced contrast for barcode lines
+                            { sharpness: { ideal: 1.5 } }, // Higher sharpness for small text
+                            { saturation: { ideal: 0.8 } }, // Reduced saturation for better contrast
                             { zoom: zoomLevel } // Zoom support
                         ]
                     }
@@ -179,9 +185,9 @@ export default function BarcodeScanner({
     };
 
     const handleZoomIn = () => {
-        if (zoomLevel < 3) {
-            setZoomLevel(prev => Math.min(prev + 0.5, 3));
-            applyZoom(Math.min(zoomLevel + 0.5, 3));
+        if (zoomLevel < 4) {
+            setZoomLevel(prev => Math.min(prev + 0.5, 4));
+            applyZoom(Math.min(zoomLevel + 0.5, 4));
         }
     };
 
@@ -219,7 +225,7 @@ export default function BarcodeScanner({
                             Scan Barcode
                         </h3>
                         <p className="scanner-subtitle">
-                            {scannerReady ? 'Position barcode 10-15cm from camera' : 'Starting camera...'}
+                            {scannerReady ? 'Position barcode 5-15cm from camera for best results' : 'Starting camera...'}
                         </p>
                     </div>
                     <button onClick={onClose} className="scanner-close-btn">
@@ -267,7 +273,7 @@ export default function BarcodeScanner({
                                     <span className="zoom-level">{zoomLevel.toFixed(1)}x</span>
                                     <button 
                                         onClick={handleZoomIn}
-                                        disabled={zoomLevel >= 3}
+                                        disabled={zoomLevel >= 4}
                                         className="control-btn"
                                         title="Zoom in"
                                     >
@@ -281,10 +287,10 @@ export default function BarcodeScanner({
                 
                 <div className="scanner-footer">
                     <p className="scanner-footer-text">
-                        📱 Supports: EAN-13, EAN-8, UPC-A, UPC-E, Code 128, Code 39, QR Code
+                        📱 Optimized for: EAN-13, EAN-8, UPC-A, UPC-E, Code 128, Code 39, QR
                     </p>
                     <p className="scanner-footer-text" style={{ marginTop: '0.25rem', fontSize: '0.75rem', opacity: 0.8 }}>
-                        💡 Tips: Ensure good lighting • Hold steady • Keep 10-15cm distance
+                        💡 Tips: Good lighting • Hold steady • 5-15cm distance • Small barcodes? Zoom in!
                     </p>
                 </div>
             </div>
