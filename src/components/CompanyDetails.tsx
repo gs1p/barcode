@@ -1,4 +1,5 @@
 import { Copy } from 'lucide-react'; // 1. Import the icon
+import './CompanyDetails.css'
 
 interface CompanyDetailsProps {
     item: any;

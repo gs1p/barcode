@@ -1,0 +1,142 @@
+/* --- Overall Container Styling --- */
+.company-info-section {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    background-color: #ffffff;
+    font-family: Arial, sans-serif; /* Use a common font */
+}
+
+.company-info-title {
+    font-size: 1.4em;
+    color: #333;
+    margin-bottom: 25px;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 10px;
+}
+
+/* --- Detail Rows (Two-Column Layout) --- */
+.detail-row {
+    display: flex;
+    justify-content: space-between; /* Pushes label to left, value to right */
+    align-items: flex-start; /* Align content to the top */
+    padding: 10px 0;
+    border-bottom: 1px solid #f9f9f9;
+}
+
+.detail-label {
+    flex-basis: 40%; /* Allocate space for the label */
+    color: #666;
+    font-weight: 500;
+    padding-right: 15px; /* Space between label and value */
+    line-height: 1.4;
+}
+
+/* Base styles for all detail values */
+.detail-value, .detail-value-bold, .detail-value-link {
+    flex-basis: 60%; /* Allocate space for the value/action */
+    color: #000;
+    line-height: 1.4;
+    text-align: right; /* Align text to the right side */
+}
+
+.detail-value-bold {
+    font-weight: bold;
+}
+
+.detail-value-link {
+    color: #007bff; /* Standard link color */
+    text-decoration: none;
+}
+
+.detail-value-link:hover {
+    text-decoration: underline;
+}
+
+
+/* --- Value with Action/Copy Button Styling --- */
+
+/* This container manages the alignment of the text value and the icon button */
+.detail-value-with-copy, .detail-value-with-action {
+    flex-basis: 60%;
+    display: flex;
+    align-items: center; /* Vertically align items */
+    justify-content: flex-end; /* Push content to the far right */
+    gap: 10px; /* Space between the value text and the button */
+    text-align: right;
+}
+
+.detail-value-with-copy .detail-value {
+    /* Ensures the value text doesn't take up the full width, leaving space for the button */
+    flex-grow: 1;
+    text-align: right;
+}
+
+/* Specific styling for the Address block */
+.company-address {
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+    font-size: 0.95em;
+    color: #333;
+}
+
+.company-address-line {
+    margin-bottom: 2px;
+}
+
+
+/* --- Icon Button Styling (Copy Button) --- */
+.copy-button {
+    /* Minimalist icon-only button */
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #007bff; /* Icon color */
+    padding: 5px; /* Increase hit area */
+    border-radius: 4px;
+    transition: background-color 0.2s;
+    display: flex; /* For centering the icon if needed */
+    align-items: center;
+    justify-content: center;
+    /* Sets a fixed, small size for the button */
+    width: 30px; 
+    height: 30px;
+}
+
+.copy-button:hover {
+    background-color: #f0f8ff; /* Light hover background */
+    color: #0056b3; /* Slightly darker icon on hover */
+}
+
+.copy-button:active {
+    background-color: #e0eaff;
+}
+
+/* Action button (e.g., Open in Map) */
+.action-button {
+    padding: 5px 10px;
+    border: 1px solid #007bff;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.2s;
+    white-space: nowrap; /* Prevent button text from wrapping */
+}
+
+.action-button:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+/* --- Footer Styling --- */
+.company-footer {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #f0f0f0;
+    font-size: 0.85em;
+    color: #999;
+    text-align: center;
+}
