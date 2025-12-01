@@ -1,6 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
 import { Camera, X, Loader2, Flashlight, FlashlightOff, ZoomIn, ZoomOut } from 'lucide-react';
-import Quagga from '@ericblade/quagga2';
 
 interface BarcodeScannerProps {
     showScanner: boolean;
@@ -18,6 +17,7 @@ export default function BarcodeScanner({
     onError 
 }: BarcodeScannerProps) {
     const scannerRef = useRef<HTMLDivElement>(null);
+    const html5QrCodeRef = useRef<any>(null);
     const [torchEnabled, setTorchEnabled] = useState(false);
     const [torchSupported, setTorchSupported] = useState(false);
     const [zoomLevel, setZoomLevel] = useState(1);
@@ -36,110 +36,100 @@ export default function BarcodeScanner({
                     throw new Error('Scanner container not found');
                 }
 
-                // Quagga2 configuration
-                Quagga.init({
-                    inputStream: {
-                        name: "Live",
-                        type: "LiveStream",
-                        target: scannerRef.current,
-                        constraints: {
-                            facingMode: "environment",
-                            width: { ideal: 1920, min: 1280 },
-                            height: { ideal: 1080, min: 720 },
-                            frameRate: { ideal: 30, min: 20 },
-                            aspectRatio: 1.777778,
-                            advanced: [
-                                { focusMode: "continuous" },
-                                { focusDistance: { ideal: 0.1, min: 0.05, max: 0.5 } },
-                                { exposureMode: "continuous" },
-                                { whiteBalanceMode: "continuous" },
-                                { brightness: { ideal: 1.1 } },
-                                { contrast: { ideal: 1.2 } },
-                                { sharpness: { ideal: 1.4 } },
-                                { saturation: { ideal: 0.9 } },
-                                { zoom: zoomLevel }
-                            ] as any
-                        }
-                    },
-                    locator: {
-                        patchSize: "medium",
-                        halfSample: true
-                    },
-                    numOfWorkers: 4,
-                    frequency: 10,
-                    decoder: {
-                        readers: [
-                            "ean_reader",      // EAN-13, EAN-8 (PRIORITY)
-                            "ean_8_reader",    // EAN-8 specific
-                            "upc_reader",      // UPC-A
-                            "upc_e_reader",    // UPC-E
-                            "code_128_reader", // Code 128
-                            "code_39_reader",  // Code 39
-                            "code_39_vin_reader",
-                            "codabar_reader",
-                            "i2of5_reader",
-                            "2of5_reader",
-                            "code_93_reader"
-                        ],
-                        multiple: false
-                    },
-                    locate: true
-                }, (err) => {
-                    if (err) {
-                        console.error('Quagga initialization error:', err);
-                        onError(`Unable to start scanner: ${err.message || err}`);
-                        return;
-                    }
-                    
-                    console.log("Quagga initialization finished. Ready to start");
-                    Quagga.start();
-                    
-                    // Get video track for torch/zoom control
-                    setTimeout(async () => {
-                        try {
-                            const stream = await navigator.mediaDevices.getUserMedia({ 
-                                video: { facingMode: "environment" } 
-                            });
-                            videoTrackRef.current = stream.getVideoTracks()[0];
-                            
-                            // Enable advanced focus settings
-                            await videoTrackRef.current.applyConstraints({
-                                advanced: [
-                                    { focusMode: "continuous" },
-                                    { focusDistance: 0.1 }
-                                ] as any
-                            });
-                            
-                            // Simulate initial focus delay
-                            setIsFocusing(true);
-                            setTimeout(() => {
-                                setIsFocusing(false);
-                            }, 1500);
-                            
-                            // Check torch and zoom support
-                            checkTorchSupport();
-                            checkZoomSupport();
-                        } catch (err) {
-                            console.error('Error getting video track:', err);
-                            setIsFocusing(false);
-                        }
-                    }, 1000);
-                });
+                const { Html5Qrcode } = await import('html5-qrcode');
+                html5QrCodeRef.current = new Html5Qrcode("barcode-scanner");
 
-                // Handle detected barcodes
-                Quagga.onDetected((result) => {
-                    if (result && result.codeResult && result.codeResult.code) {
-                        const code = result.codeResult.code;
-                        console.log('Scanned:', code);
-                        
-                        // Vibrate on successful scan
+                // Enhanced configuration with all features
+                const config = {
+                    fps: 30, // Higher frame rate for faster scanning
+                    qrbox: { width: 250, height: 120 }, // Smaller box for small barcodes
+                    aspectRatio: 1.777778,
+                    disableFlip: false,
+                    // EAN-13 and EAN-8 priority, then others
+                    formatsToSupport: [
+                        8,  // EAN_13 (PRIORITY)
+                        9,  // EAN_8 (PRIORITY)
+                        12, // UPC_A
+                        13, // UPC_E
+                        5,  // CODE_128
+                        4,  // CODE_39
+                        0,  // QR_CODE
+                        1,  // AZTEC
+                        2,  // CODABAR
+                        3,  // CODE_93
+                        6,  // DATA_MATRIX
+                        7,  // ITF
+                        10, // PDF_417
+                        11  // RSS_14
+                    ],
+                    // Advanced video constraints for close-up scanning
+                    videoConstraints: {
+                        facingMode: "environment",
+                        width: { ideal: 1920, min: 1280 }, // Full HD resolution
+                        height: { ideal: 1080, min: 720 }, // 1080p preferred
+                        frameRate: { ideal: 30, min: 20 }, // Higher frame rate
+                        aspectRatio: 1.777778,
+                        advanced: [
+                            { focusMode: "continuous" }, // Continuous autofocus
+                            { focusDistance: { ideal: 0.1, min: 0.05, max: 0.5 } }, // 5cm-50cm focus range
+                            { exposureMode: "continuous" }, // Auto exposure
+                            { exposureCompensation: 0 }, // Balanced exposure
+                            { whiteBalanceMode: "continuous" }, // Auto white balance
+                            { brightness: { ideal: 1.1 } }, // Slight brightness boost
+                            { contrast: { ideal: 1.2 } }, // Enhanced contrast for barcode lines
+                            { sharpness: { ideal: 1.4 } }, // Higher sharpness for small text
+                            { saturation: { ideal: 0.9 } }, // Slightly reduced saturation
+                            { zoom: zoomLevel } // Zoom support
+                        ]
+                    }
+                };
+
+                await html5QrCodeRef.current.start(
+                    { facingMode: "environment" },
+                    config,
+                    (decodedText: string) => {
+                        console.log('Scanned:', decodedText);
+                        // Vibrate on successful scan (if supported)
                         if (navigator.vibrate) {
                             navigator.vibrate(200);
                         }
+                        onScan(decodedText);
+                    },
+                    () => { }
+                );
+
+                // Get video track reference for torch control
+                setTimeout(async () => {
+                    try {
+                        const stream = await navigator.mediaDevices.getUserMedia({ 
+                            video: { facingMode: "environment" } 
+                        });
+                        videoTrackRef.current = stream.getVideoTracks()[0];
                         
-                        onScan(code);
+                        // Enable advanced focus settings
+                        await videoTrackRef.current.applyConstraints({
+                            advanced: [
+                                { focusMode: "continuous" },
+                                { focusDistance: 0.1 }
+                            ] as any
+                        });
+                        
+                        // Simulate initial focus delay (like other apps)
+                        setIsFocusing(true);
+                        setTimeout(() => {
+                            setIsFocusing(false);
+                        }, 1500);
+                        
+                        // Check torch (flash) support
+                        checkTorchSupport();
+                        
+                        // Check zoom support
+                        checkZoomSupport();
+                    } catch (err) {
+                        console.error('Error getting video track:', err);
+                        setIsFocusing(false);
                     }
-                });
+                }, 1000);
 
             } catch (err: any) {
                 console.error('Scanner error:', err);
@@ -164,8 +154,14 @@ export default function BarcodeScanner({
                         videoTrackRef.current = null;
                     }
                     
-                    Quagga.stop();
-                    Quagga.offDetected();
+                    if (html5QrCodeRef.current) {
+                        const isScanning = html5QrCodeRef.current.getState() === 2;
+                        if (isScanning) {
+                            await html5QrCodeRef.current.stop();
+                        }
+                        html5QrCodeRef.current.clear();
+                        html5QrCodeRef.current = null;
+                    }
                 } catch (err) {
                     console.error('Error stopping scanner:', err);
                 }
@@ -231,17 +227,15 @@ export default function BarcodeScanner({
 
     const handleZoomIn = () => {
         if (zoomLevel < 4) {
-            const newZoom = Math.min(zoomLevel + 0.5, 4);
-            setZoomLevel(newZoom);
-            applyZoom(newZoom);
+            setZoomLevel(prev => Math.min(prev + 0.5, 4));
+            applyZoom(Math.min(zoomLevel + 0.5, 4));
         }
     };
 
     const handleZoomOut = () => {
         if (zoomLevel > 1) {
-            const newZoom = Math.max(zoomLevel - 0.5, 1);
-            setZoomLevel(newZoom);
-            applyZoom(newZoom);
+            setZoomLevel(prev => Math.max(prev - 0.5, 1));
+            applyZoom(Math.max(zoomLevel - 0.5, 1));
         }
     };
 
@@ -354,7 +348,7 @@ export default function BarcodeScanner({
                 
                 <div className="scanner-footer">
                     <p className="scanner-footer-text">
-                        📱 Optimized for: EAN-13, EAN-8, UPC-A, UPC-E, Code 128, Code 39
+                        📱 Optimized for: EAN-13, EAN-8, UPC-A, UPC-E, Code 128, Code 39, QR
                     </p>
                     <p className="scanner-footer-text" style={{ marginTop: '0.25rem', fontSize: '0.75rem', opacity: 0.8 }}>
                         💡 Tips: Good lighting • Hold steady • 5-15cm distance • Small barcodes? Zoom in!
@@ -432,21 +426,6 @@ export default function BarcodeScanner({
                 .scanner-viewport {
                     width: 100%;
                     height: 400px;
-                    position: relative;
-                }
-
-                .scanner-viewport video {
-                    width: 100% !important;
-                    height: 100% !important;
-                    object-fit: cover;
-                }
-
-                .scanner-viewport canvas {
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100% !important;
-                    height: 100% !important;
                 }
 
                 .scanner-loading {
