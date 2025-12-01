@@ -23,6 +23,7 @@ export default function BarcodeScanner({
     const [zoomLevel, setZoomLevel] = useState(1);
     const [zoomSupported, setZoomSupported] = useState(false);
     const videoTrackRef = useRef<MediaStreamTrack | null>(null);
+    const [isFocusing, setIsFocusing] = useState(true);
 
     useEffect(() => {
         if (!showScanner) return;
@@ -70,14 +71,14 @@ export default function BarcodeScanner({
                         aspectRatio: 1.777778,
                         advanced: [
                             { focusMode: "continuous" }, // Continuous autofocus
-                            { focusDistance: { ideal: 0.05, min: 0.05, max: 0.3 } }, // 5cm-30cm focus range
+                            { focusDistance: { ideal: 0.1, min: 0.05, max: 0.5 } }, // 5cm-50cm focus range
                             { exposureMode: "continuous" }, // Auto exposure
                             { exposureCompensation: 0 }, // Balanced exposure
                             { whiteBalanceMode: "continuous" }, // Auto white balance
-                            { brightness: { ideal: 1.2 } }, // Slight brightness boost
-                            { contrast: { ideal: 1.3 } }, // Enhanced contrast for barcode lines
-                            { sharpness: { ideal: 1.5 } }, // Higher sharpness for small text
-                            { saturation: { ideal: 0.8 } }, // Reduced saturation for better contrast
+                            { brightness: { ideal: 1.1 } }, // Slight brightness boost
+                            { contrast: { ideal: 1.2 } }, // Enhanced contrast for barcode lines
+                            { sharpness: { ideal: 1.4 } }, // Higher sharpness for small text
+                            { saturation: { ideal: 0.9 } }, // Slightly reduced saturation
                             { zoom: zoomLevel } // Zoom support
                         ]
                     }
@@ -105,6 +106,20 @@ export default function BarcodeScanner({
                         });
                         videoTrackRef.current = stream.getVideoTracks()[0];
                         
+                        // Enable advanced focus settings
+                        await videoTrackRef.current.applyConstraints({
+                            advanced: [
+                                { focusMode: "continuous" },
+                                { focusDistance: 0.1 }
+                            ] as any
+                        });
+                        
+                        // Simulate initial focus delay (like other apps)
+                        setIsFocusing(true);
+                        setTimeout(() => {
+                            setIsFocusing(false);
+                        }, 1500);
+                        
                         // Check torch (flash) support
                         checkTorchSupport();
                         
@@ -112,6 +127,7 @@ export default function BarcodeScanner({
                         checkZoomSupport();
                     } catch (err) {
                         console.error('Error getting video track:', err);
+                        setIsFocusing(false);
                     }
                 }, 1000);
 
@@ -227,13 +243,26 @@ export default function BarcodeScanner({
         try {
             if (!videoTrackRef.current) return;
             
+            // Show focusing indicator during zoom
+            setIsFocusing(true);
+            
             await videoTrackRef.current.applyConstraints({
-                advanced: [{ zoom } as any]
+                advanced: [
+                    { zoom },
+                    { focusMode: "continuous" },
+                    { focusDistance: 0.1 }
+                ] as any
             });
             
             console.log(`Zoom set to ${zoom}x`);
+            
+            // Clear focusing after camera adjusts
+            setTimeout(() => {
+                setIsFocusing(false);
+            }, 800);
         } catch (err) {
             console.error('Error applying zoom:', err);
+            setIsFocusing(false);
         }
     };
 
@@ -262,6 +291,14 @@ export default function BarcodeScanner({
                     {!scannerReady && (
                         <div className="scanner-loading">
                             <Loader2 className="animate-spin" style={{ width: '3rem', height: '3rem', color: '#10b981' }} />
+                        </div>
+                    )}
+                    
+                    {/* Focusing Overlay */}
+                    {isFocusing && scannerReady && (
+                        <div className="focusing-overlay">
+                            <div className="focus-ring"></div>
+                            <p className="focus-text">Focusing...</p>
                         </div>
                     )}
                     
@@ -402,6 +439,39 @@ export default function BarcodeScanner({
                     gap: 1rem;
                 }
 
+                .focusing-overlay {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(0, 0, 0, 0.3);
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 1rem;
+                    pointer-events: none;
+                    animation: fadeIn 0.3s ease-in;
+                }
+
+                .focus-ring {
+                    width: 100px;
+                    height: 100px;
+                    border: 3px solid #10b981;
+                    border-radius: 50%;
+                    border-top-color: transparent;
+                    animation: spin 1s linear infinite;
+                }
+
+                .focus-text {
+                    color: white;
+                    font-size: 1rem;
+                    font-weight: 600;
+                    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+                    margin: 0;
+                }
+
                 .scanner-controls {
                     position: absolute;
                     bottom: 1rem;
@@ -487,6 +557,15 @@ export default function BarcodeScanner({
                     }
                     to {
                         transform: rotate(360deg);
+                    }
+                }
+
+                @keyframes fadeIn {
+                    from {
+                        opacity: 0;
+                    }
+                    to {
+                        opacity: 1;
                     }
                 }
 
